@@ -1,0 +1,7 @@
+# For text files, ensure LF line endings
+* text=auto
+
+# Explicitly set line endings for specific file types
+*.sh text eol=lf
+*.py text eol=lf
+*.bat text eol=crlf
