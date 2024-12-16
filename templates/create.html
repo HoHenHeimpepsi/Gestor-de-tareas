@@ -1,12 +1,50 @@
-{% extends 'layouts.html'%}
+{% extends 'layouts.html' %}
 
 {% block body %}
-<h1>Crear tarea</h1>
 
-<form action="/tasks/create" method="POST" enctype="multipart/form-data"> 
-    <input type="text" name="title" placeholder="Título de la tarea">
-    <input type="text" name="description" placeholder="Descripción de la tarea">
-    <input type="file" name="file" accept=".json">
-    <button>Crear tarea</button>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<h1>Crear Tarea</h1>
+
+<form action="/tasks/create" method="POST" enctype="application/x-www-form-urlencoded" id="taskForm"> 
+    <input type="text" name="title" id="title" placeholder="Título de la tarea" required>
+    <textarea name="description" id="description" placeholder="Descripción de la tarea" required></textarea>
+    <input type="file" name="file" id="file" accept=".json" onchange="toggleFields()">
+    <input type="hidden" name="estado" value="Pendiente">
+    <button type="submit">Crear Tarea</button>
 </form>
+
+<script>
+    function toggleFields() {
+        const fileInput = document.getElementById('file');
+        const titleInput = document.getElementById('title');
+        const descriptionInput = document.getElementById('description');
+        const form = document.getElementById('taskForm');
+
+        if (fileInput.files.length > 0) {
+            form.action = "/tasks/import";  
+            form.enctype = "multipart/form-data";  
+
+            titleInput.required = false;
+            descriptionInput.required = false;
+            titleInput.value = '';  
+            descriptionInput.value = '';  
+        } else {
+            form.action = "/tasks/create";  
+            form.enctype = "application/x-www-form-urlencoded";  
+
+            titleInput.required = true;
+            descriptionInput.required = true;
+        }
+    }
+</script>
+
 {% endblock %}

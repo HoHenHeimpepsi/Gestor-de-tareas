@@ -1,28 +1,38 @@
-{% extends 'layouts.html'%}
+{% extends 'layouts.html' %}
 
 {% block body %}
 
-{% with messages = get_flashed_messages() %}
-
+{% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
-
 {% endwith %}
 
 <h1>Lista de Tareas</h1>
 
-<div>   
-    {% for task in tasks %}
-        <div>
-            <h2>{{ task.Titulo }}</h2>
-            <p>{{ task.Descripcion }}</p>
-            <a href="{{url_for('tasks.tasks_update', id=task.id )}}">Actualizar tarea</a>
-            <a href="{{url_for('tasks.tasks_delete', id=task.id )}}">Borrar tarea</a>
-        </div>
-    {% endfor %}
-</div>
+<form action="{{ url_for('export.export_selected_tasks') }}" method="POST">
+    <div class="task-container">
+        {% for task in tasks %}
+            <div class="task-card">
+                <h2>{{ task.Titulo }}</h2>
+                <p>{{ task.Descripcion }}</p>
+                <p><strong>Estado:</strong> {{ task.estado }}</p>
+
+                <a href="{{ url_for('tasks.tasks_update', id=task.id) }}" class="btn btn-warning">Actualizar</a>
+                {% if task.estado == "Completado" %}
+                    <a href="{{ url_for('tasks.tasks_delete', id=task.id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?')">Eliminar</a>
+                {% endif %}
+
+                <input type="checkbox" name="task_ids" value="{{ task.id }}">
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Exportar tareas seleccionadas</button>
+</form>
 
 {% endblock %}
