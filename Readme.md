@@ -1,6 +1,6 @@
 Instruccion ejecucion proyecto "Gestor de Tareas"
 
-paso 1: instalar dependencias descritas en el archivo "requeriments.txt"
+paso 1: instalar dependencias descritas en el archivo "requeriments.txt", con pip install -r requirements.txt
 
 paso 2: insertar las claves descritas en el archivo ".env.ejemplo" dentro del codigo "app.py"
 
